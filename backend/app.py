@@ -1,10 +1,15 @@
 from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 import os
 from dotenv import load_dotenv
 from models.help_request import HelpRequest
 import json
 from datetime import datetime
-import os
+
+app = Flask(__name__)
+CORS(app, origins="*", methods=["GET", "POST", "OPTIONS"], allow_headers="*")
+
 
 # Load static knowledge base
 knowledge_base = {
@@ -24,7 +29,7 @@ else:
 # Load environment variables
 load_dotenv()
 
-app = Flask(__name__)
+
 
 # Dummy Knowledge Base
 knowledge_base = {

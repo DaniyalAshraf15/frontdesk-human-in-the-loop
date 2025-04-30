@@ -2,47 +2,177 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Supervisor Help Dashboard</title>
+  <title>Frontdesk Supervisor Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-bottom: 30px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    tr:hover {
+      background-color: #f9f9f9;
+      cursor: pointer;
+    }
+    h1 {
+      color: #333;
+    }
+    input[type="text"] {
+      width: 300px;
+      padding: 8px;
+      margin: 10px 0;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+    #message {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-  <h1>Pending Help Requests</h1>
-  <div id="requests"></div>
 
-  <h2>Submit Answer</h2>
-  <form id="answerForm">
-    Help Request ID: <input type="text" id="requestId" required><br><br>
-    Answer: <input type="text" id="answer" required><br><br>
+  <h1>🧠 Pending Help Requests</h1>
+  <table id="requestsTable">
+    <thead>
+      <tr>
+        <th>Help Request ID</th>
+        <th>Question</th>
+        <th>Caller</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td colspan="4">Loading...</td></tr>
+    </tbody>
+  </table>
+
+  <h2>✅ Submit Answer</h2>
+  <form id="resolveForm">
+    <label>Help Request ID:</label><br>
+    <input type="text" id="requestId" name="requestId" required><br><br>
+
+    <label>Answer:</label><br>
+    <input type="text" id="answer" name="answer" required><br><br>
+
     <button type="submit">Submit Answer</button>
   </form>
 
+  <p id="message"></p>
+  <h2>📞 Simulate Incoming Call</h2>
+<form id="callForm">
+  <label>Question:</label><br>
+  <input type="text" id="callQuestion" required style="width: 300px;"><br><br>
+
+  <label>Caller Info:</label><br>
+  <input type="text" id="callerInfo" value="Customer#123" required style="width: 300px;"><br><br>
+
+  <button type="submit">Simulate Call</button>
+</form>
+
+<p id="callResponseMessage"></p>
+
+
   <script>
-    async function loadRequests() {
-      const response = await fetch('http://localhost:5000/pending-requests');
-      const data = await response.json();
-      const requestsDiv = document.getElementById('requests');
-      requestsDiv.innerHTML = '';
+    // Load all pending requests
+    fetch('http://localhost:5000/pending-requests')
+      .then(res => res.json())
+      .then(data => {
+        const tableBody = document.querySelector('#requestsTable tbody');
+        tableBody.innerHTML = '';
 
-      data.forEach(req => {
-        requestsDiv.innerHTML += `<p><b>ID:</b> ${req.id} | <b>Question:</b> ${req.question}</p>`;
+        if (data.length === 0) {
+          tableBody.innerHTML = '<tr><td colspan="4">No pending help requests.</td></tr>';
+          return;
+        }
+
+        data.forEach(req => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${req.id}</td>
+            <td>${req.question}</td>
+            <td>${req.caller_info}</td>
+            <td>${req.status}</td>
+          `;
+          row.onclick = () => {
+            document.getElementById('requestId').value = req.id;
+          };
+          tableBody.appendChild(row);
+        });
       });
-    }
 
-    document.getElementById('answerForm').addEventListener('submit', async function(e) {
+    // Submit form
+    document.getElementById('resolveForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      const requestId = document.getElementById('requestId').value;
-      const answer = document.getElementById('answer').value;
 
-      await fetch('http://localhost:5000/resolve-request', {
+      const id = document.getElementById('requestId').value.trim();
+      const answer = document.getElementById('answer').value.trim();
+
+      fetch('http://localhost:5000/resolve-request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: requestId, answer: answer })
+        body: JSON.stringify({ id, answer })
+      })
+      .then(res => res.json())
+      .then(data => {
+        const msg = document.getElementById('message');
+        if (data.message) {
+          msg.textContent = "✅ Answer submitted successfully!";
+          msg.style.color = "green";
+          setTimeout(() => location.reload(), 2000);  // reload table
+        } else {
+          msg.textContent = "❌ " + (data.error || "Unknown error");
+          msg.style.color = "red";
+        }
       });
-
-      alert('Answer submitted!');
-      loadRequests();
     });
-
-    loadRequests();
   </script>
+  <script>
+    document.getElementById('callForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+  
+      const question = document.getElementById('callQuestion').value.trim();
+      const caller_info = document.getElementById('callerInfo').value.trim();
+  
+      fetch('http://localhost:5000/call', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question, caller_info })
+      })
+      .then(res => res.json())
+      .then(data => {
+        const msg = document.getElementById('callResponseMessage');
+  
+        if (data.status === 'answered') {
+          msg.textContent = "✅ AI Agent Response: " + data.response;
+          msg.style.color = "green";
+        } else if (data.status === 'escalated') {
+          msg.textContent = "🔁 Escalated to Supervisor. Help Request ID: " + data.help_request_id;
+          msg.style.color = "orange";
+        } else {
+          msg.textContent = "❌ Unexpected response.";
+          msg.style.color = "red";
+        }
+      })
+      .catch(err => {
+        document.getElementById('callResponseMessage').textContent = "❌ API Error: " + err.message;
+      });
+    });
+  </script>
+  
+
 </body>
 </html>
