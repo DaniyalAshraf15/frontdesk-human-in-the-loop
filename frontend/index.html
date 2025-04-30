@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Supervisor Help Dashboard</title>
+</head>
+<body>
+  <h1>Pending Help Requests</h1>
+  <div id="requests"></div>
+
+  <h2>Submit Answer</h2>
+  <form id="answerForm">
+    Help Request ID: <input type="text" id="requestId" required><br><br>
+    Answer: <input type="text" id="answer" required><br><br>
+    <button type="submit">Submit Answer</button>
+  </form>
+
+  <script>
+    async function loadRequests() {
+      const response = await fetch('http://localhost:5000/pending-requests');
+      const data = await response.json();
+      const requestsDiv = document.getElementById('requests');
+      requestsDiv.innerHTML = '';
+
+      data.forEach(req => {
+        requestsDiv.innerHTML += `<p><b>ID:</b> ${req.id} | <b>Question:</b> ${req.question}</p>`;
+      });
+    }
+
+    document.getElementById('answerForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const requestId = document.getElementById('requestId').value;
+      const answer = document.getElementById('answer').value;
+
+      await fetch('http://localhost:5000/resolve-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: requestId, answer: answer })
+      });
+
+      alert('Answer submitted!');
+      loadRequests();
+    });
+
+    loadRequests();
+  </script>
+</body>
+</html>

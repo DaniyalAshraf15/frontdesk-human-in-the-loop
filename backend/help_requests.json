@@ -1,0 +1,67 @@
+[
+    {
+        "id": "60fe17ff-1726-4fa2-b54a-434f3325bf7f",
+        "question": "do you have bridal makeup services?",
+        "caller_info": "Customer#201",
+        "status": "Pending",
+        "created_at": "2025-04-29 00:45:46",
+        "resolved_at": null
+    },
+    {
+        "id": "78185159-094e-4c98-83d9-ac6e2ff1bf83",
+        "question": "do you have bridal makeup services?",
+        "caller_info": "Customer#101",
+        "status": "Pending",
+        "created_at": "2025-04-29 01:11:36",
+        "resolved_at": null
+    },
+    {
+        "id": "87288546-da54-4ad9-a29c-4be9ce53cfed",
+        "question": "do you have bridal makeup services?",
+        "caller_info": "Customer#201",
+        "status": "Pending",
+        "created_at": "2025-04-29 01:14:03",
+        "resolved_at": null
+    },
+    {
+        "id": "b5bbd273-b1ce-41f6-8239-0f43329bb03d",
+        "question": "do you have spa services?",
+        "caller_info": "Customer#101",
+        "status": "Pending",
+        "created_at": "2025-04-29 01:16:09",
+        "resolved_at": null
+    },
+    {
+        "id": "3b399701-d361-4e17-92ae-e2e73c30ca6d",
+        "question": "do you have spa services?",
+        "caller_info": "Customer#500",
+        "status": "Pending",
+        "created_at": "2025-04-29 01:19:12",
+        "resolved_at": null
+    },
+    {
+        "id": "82875cf8-ddb8-474f-9336-a776e657f099",
+        "question": "do you have spa services?",
+        "caller_info": "Customer#501",
+        "status": "Pending",
+        "created_at": "2025-04-29 01:22:26",
+        "resolved_at": null
+    },
+    {
+        "id": "57714991-94e0-429e-941a-7ff6d7bc94a0",
+        "question": "do you have hair dressing services?",
+        "caller_info": "Customer#101",
+        "status": "Pending",
+        "created_at": "2025-04-29 01:24:10",
+        "resolved_at": null
+    },
+    {
+        "id": "508e133c-fe75-4aea-b601-d8c6b55424b9",
+        "question": "do you have hair dressing cutting services?",
+        "caller_info": "Customer#199",
+        "status": "Resolved",
+        "created_at": "2025-04-29 01:25:05",
+        "resolved_at": "2025-04-29 01:27:28",
+        "answer": "Yes, we offer hair cutting services!"
+    }
+]
