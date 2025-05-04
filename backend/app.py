@@ -142,6 +142,13 @@ def resolve_request():
 
     else:
         return jsonify({"error": "Request not found or already resolved."}), 404
+@app.route("/learned-answers", methods=["GET"])
+def get_learned_answers():
+    if os.path.exists('knowledge_base.json'):
+        with open('knowledge_base.json', 'r') as f:
+            data = json.load(f)
+        return jsonify(data)
+    return jsonify({})
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)

@@ -1,3 +1,4 @@
+<!-- Updated HTML file with Learned Answers section powered by API -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,7 +26,7 @@
       background-color: #f9f9f9;
       cursor: pointer;
     }
-    h1 {
+    h1, h2 {
       color: #333;
     }
     input[type="text"] {
@@ -37,9 +38,12 @@
       padding: 10px 20px;
       font-size: 16px;
     }
-    #message {
+    #message, #callResponseMessage {
       margin-top: 20px;
       font-weight: bold;
+      min-height: 24px;
+      padding: 8px;
+      border-radius: 6px;
     }
   </style>
 </head>
@@ -72,22 +76,35 @@
   </form>
 
   <p id="message"></p>
+
   <h2>Simulate Incoming Call</h2>
-<form id="callForm">
-  <label>Question:</label><br>
-  <input type="text" id="callQuestion" required style="width: 300px;"><br><br>
+  <form id="callForm">
+    <label>Question:</label><br>
+    <input type="text" id="callQuestion" required style="width: 300px;" readonly>
+    <button type="button" onclick="startVoiceInput()">🎤 Speak</button><br><br>
 
-  <label>Caller Info:</label><br>
-  <input type="text" id="callerInfo" value="Customer#123" required style="width: 300px;"><br><br>
+    <label>Caller Info:</label><br>
+    <input type="text" id="callerInfo" value="Customer#123" required style="width: 300px;"><br><br>
 
-  <button type="submit">Simulate Call</button>
-</form>
+    <button type="submit">Simulate Call</button>
+  </form>
 
-<p id="callResponseMessage"></p>
+  <p id="callResponseMessage"></p>
 
+  <h2>Learned Answers</h2>
+  <table id="learnedTable">
+    <thead>
+      <tr>
+        <th>Question</th>
+        <th>Answer</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td colspan="2">Loading...</td></tr>
+    </tbody>
+  </table>
 
   <script>
-    // Load all pending requests
     fetch('http://localhost:5000/pending-requests')
       .then(res => res.json())
       .then(data => {
@@ -114,7 +131,6 @@
         });
       });
 
-    // Submit form
     document.getElementById('resolveForm').addEventListener('submit', function(e) {
       e.preventDefault();
 
@@ -132,21 +148,20 @@
         if (data.message) {
           msg.textContent = "✅ Answer submitted successfully!";
           msg.style.color = "green";
-          setTimeout(() => location.reload(), 2000);  // reload table
+          setTimeout(() => location.reload(), 2000);
         } else {
           msg.textContent = "❌ " + (data.error || "Unknown error");
           msg.style.color = "red";
         }
       });
     });
-  </script>
-  <script>
+
     document.getElementById('callForm').addEventListener('submit', function(e) {
       e.preventDefault();
-  
+
       const question = document.getElementById('callQuestion').value.trim();
       const caller_info = document.getElementById('callerInfo').value.trim();
-  
+
       fetch('http://localhost:5000/call', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -155,11 +170,12 @@
       .then(res => res.json())
       .then(data => {
         const msg = document.getElementById('callResponseMessage');
-  
+
         if (data.status === 'answered') {
           msg.textContent = "✅ AI Agent Response: " + data.response;
           msg.style.color = "green";
         } else if (data.status === 'escalated') {
+          alert("Supervisor escalation: Help Request ID: " + data.help_request_id);
           msg.textContent = "🔁 Escalated to Supervisor. Help Request ID: " + data.help_request_id;
           msg.style.color = "orange";
         } else {
@@ -171,8 +187,57 @@
         document.getElementById('callResponseMessage').textContent = "❌ API Error: " + err.message;
       });
     });
+
+    function startVoiceInput() {
+      if (!('webkitSpeechRecognition' in window)) {
+        alert("Your browser doesn't support speech recognition.");
+        return;
+      }
+
+      const recognition = new webkitSpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      recognition.onstart = () => {
+        document.getElementById("callQuestion").value = "🎙️ Listening...";
+      };
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById("callQuestion").value = transcript;
+      };
+
+      recognition.onerror = (event) => {
+        document.getElementById("callQuestion").value = "❌ Error: " + event.error;
+      };
+
+      recognition.start();
+    }
+
+    // Load learned answers from backend API
+    fetch('http://localhost:5000/learned-answers')
+      .then(res => res.json())
+      .then(data => {
+        const learnedBody = document.querySelector('#learnedTable tbody');
+        learnedBody.innerHTML = '';
+
+        const entries = Object.entries(data);
+        if (entries.length === 0) {
+          learnedBody.innerHTML = '<tr><td colspan="2">No learned answers yet.</td></tr>';
+          return;
+        }
+
+        entries.forEach(([question, answer]) => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${question}</td>
+            <td>${answer}</td>
+          `;
+          learnedBody.appendChild(row);
+        });
+      });
   </script>
-  
 
 </body>
 </html>
