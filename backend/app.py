@@ -45,6 +45,17 @@ def receive_call():
     question = data.get("question", "").lower()
     caller_info = data.get("caller_info", "Unknown Caller")
 
+    # 🔄 Reload the dynamic knowledge base each time
+    global dynamic_knowledge
+    try:
+        if os.path.exists('knowledge_base.json'):
+            with open('knowledge_base.json', 'r') as f:
+                dynamic_knowledge = json.load(f)
+        else:
+            dynamic_knowledge = {}
+    except:
+        dynamic_knowledge = {}
+
     # First check in static knowledge
     if question in knowledge_base:
         response = knowledge_base[question]
@@ -59,7 +70,7 @@ def receive_call():
 
     # If not known → Escalate
     print(f"[AI Agent] I don't know the answer to: {question}. Requesting supervisor help.")
-        
+
     help_request = HelpRequest(question=question, caller_info=caller_info)
     help_requests.append(help_request.to_dict())
 

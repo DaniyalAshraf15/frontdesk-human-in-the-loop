@@ -1,82 +1,18 @@
 [
     {
-        "id": "473aadb3-3660-430f-b807-13b465de4227",
-        "question": "do you offer free ipone?",
+        "id": "5dde1806-c5e8-4a45-8a9b-a62765aea0ab",
+        "question": "do you use chatgpt",
         "caller_info": "Customer#123",
         "status": "Pending",
-        "created_at": "2025-04-30 02:15:09",
+        "created_at": "2025-05-03 23:27:40",
         "resolved_at": null
     },
     {
-        "id": "ae3ba073-ca83-4e2e-91e3-8866b68afd38",
-        "question": "do you offer free ipone?",
+        "id": "3c0ab740-011b-4f49-ba9a-85137a9a57e6",
+        "question": "do you use chatgpt 2",
         "caller_info": "Customer#123",
         "status": "Pending",
-        "created_at": "2025-04-30 02:15:54",
-        "resolved_at": null
-    },
-    {
-        "id": "cedd2b50-9535-4836-9d14-f32bea925724",
-        "question": "do you offer free ipone?",
-        "caller_info": "Customer#1232",
-        "status": "Pending",
-        "created_at": "2025-04-30 02:16:00",
-        "resolved_at": null
-    },
-    {
-        "id": "7afd90c6-672f-48cc-9f1d-be699afbf283",
-        "question": "do you offer free ipone?",
-        "caller_info": "Customer#123",
-        "status": "Pending",
-        "created_at": "2025-04-30 02:16:40",
-        "resolved_at": null
-    },
-    {
-        "id": "883d8c0f-2fee-4c8d-b2a3-8e1f1b77fd77",
-        "question": "do you offer free ipone??",
-        "caller_info": "Customer#602",
-        "status": "Pending",
-        "created_at": "2025-04-30 02:18:24",
-        "resolved_at": null
-    },
-    {
-        "id": "f29072b6-aa1b-4427-8937-19d75a635e62",
-        "question": "do you offer free ipone?",
-        "caller_info": "Customer#123",
-        "status": "Pending",
-        "created_at": "2025-04-30 02:20:03",
-        "resolved_at": null
-    },
-    {
-        "id": "a3e098b1-af89-465d-9ccf-ce14b755d859",
-        "question": "do you offer free ipone?",
-        "caller_info": "Customer#123",
-        "status": "Pending",
-        "created_at": "2025-04-30 02:20:03",
-        "resolved_at": null
-    },
-    {
-        "id": "1b5103e7-abc5-4a2c-8b39-04d6da9947a4",
-        "question": "do you offer free ipone??",
-        "caller_info": "Customer#602",
-        "status": "Pending",
-        "created_at": "2025-04-30 02:20:38",
-        "resolved_at": null
-    },
-    {
-        "id": "1d201dde-1098-43c0-9336-5c0bd503ad5f",
-        "question": "do you offer free ipone?",
-        "caller_info": "Customer#602",
-        "status": "Pending",
-        "created_at": "2025-04-30 02:21:02",
-        "resolved_at": null
-    },
-    {
-        "id": "44d27b88-a0ef-4f1d-9522-451645e3a05a",
-        "question": "do you offer free ipone?",
-        "caller_info": "Customer#602",
-        "status": "Pending",
-        "created_at": "2025-04-30 02:21:11",
+        "created_at": "2025-05-03 23:30:02",
         "resolved_at": null
     }
 ]
